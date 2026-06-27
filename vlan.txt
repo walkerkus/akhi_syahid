@@ -1,0 +1,37 @@
+enable
+configure terminal
+vlan 88
+name admin
+
+vlan 10
+name Prodi
+
+vlan 20
+name Dosen
+
+vlan 30
+name Mahasiswa
+
+interface range fa0/1-5
+switchport mode access
+switchport access vlan 88
+exit
+interface range fa0/6-10
+switchport mode access
+switchport access vlan 10
+exit
+interface range fa0/11-16
+switchport mode access
+switchport access vlan 20
+exit
+interface range fa0/17-24
+switchport mode access
+switchport access vlan 30
+exit
+interface fa0/23
+switchport mode trunk
+exit
+
+interface fa0/24
+switchport mode trunk
+exit
