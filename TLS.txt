@@ -1,0 +1,74 @@
+sudo nano /var/www/html/index.html
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Biodata Syahid</title>
+</head>
+<body>
+    <h1>Biodata Mahasiswa</h1>
+    <p><strong>Nama:</strong> Syahid</p>
+    <p><strong>NIM:</strong> L200230272</p>
+</body>
+</html>
+
+
+
+cd /etc/apache2 
+mkdir ssl 
+sudo a2enmod ssl 
+sudo systemctl daemon-reload 
+sudo systemctl reload apache2 
+sudo systemctl restart apache2 
+
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/apache2/ssl/apache.key -out /etc/apache2/ssl/apache.crt -subj "/C=ID/ST=Jawa Tengah/L=Surakarta/O=Universitas Muhammadiyah Surakarta/OU=L200230272/CN=labfki.test"
+
+
+sudo cd sites-available/ 
+sudo cp default-ssl.conf default-ssl.conf.bak 
+sudo nano default-ssl.conf 
+
+
+<VirtualHost _default_:443>
+    ServerAdmin lab@fki.test
+    ServerName labfki.test
+    ServerAlias www.labfki.test
+    DocumentRoot /var/www/html
+
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+    SSLEngine on
+    SSLCertificateFile /etc/apache2/ssl/apache.crt
+    SSLCertificateKeyFile /etc/apache2/ssl/apache.key
+
+    <FilesMatch "\.(?:cgi|shtml|phtml|php)$">
+        SSLOptions +StdEnvVars
+    </FilesMatch>
+    <Directory /usr/lib/cgi-bin>
+        SSLOptions +StdEnvVars
+    </Directory>
+</VirtualHost>
+
+sudo a2ensite default-ssl.conf 
+sudo systemctl reload apache2 
+sudo nano /etc/hosts 
+
+
+127.0.0.1       localhost kali labfki.test www.labfki.test
+
+
+sudo apt update
+sudo apt install libapache2-mod-security2 -y
+sudo a2enmod security2
+sudo cp /etc/modsecurity/modsecurity.conf-recommended /etc/modsecurity/modsecurity.conf
+sudo nano /etc/modsecurity/modsecurity.conf
+
+F: SecRuleEngine DetectionOnly -> SecRuleEngine On
+
+sudo apache2ctl configtest
+sudo systemctl start apache2 
+sudo systemctl status apache2
+
+curl -k -i "https://labfki.test/?id=1%20OR%201=1"
