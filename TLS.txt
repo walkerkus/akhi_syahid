@@ -14,7 +14,6 @@ sudo nano /var/www/html/index.html
 </html>
 
 
-
 cd /etc/apache2 
 mkdir ssl 
 sudo a2enmod ssl 

@@ -1,0 +1,30 @@
+sudo apt-get update
+sudo apt-get install tripwire
+
+cd /etc/tripwire
+sudo chmod 0600 tw.cfg tw.pol
+
+mkdir ~/rahasia
+touch ~/rahasia/data_penting.txt
+
+cd /etc/tripwire
+sudo nano twpol.txt
+
+/home/spid3r/rahasia  -> $(SEC_CRIT) ;
+
+sudo twadmin --create-polfile --site-keyfile site.key twpol.txt
+
+sudo tripwire --init
+
+touch ~/rahasia/penyusup.txt
+
+sudo tripwire --check
+
+sudo nano /etc/tripwire/twpol.txt
+
+# di depan baris /home/spid3r/rahasia -> $(SEC_CRIT) ;
+
+sudo tripwire --update-policy /etc/tripwire/twpol.txt
+
+
+sudo apt-get purge --auto-remove -y tripwire && sudo rm -rf /etc/tripwire /var/lib/tripwire ~/rahasia

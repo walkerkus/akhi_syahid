@@ -1,0 +1,11 @@
+sudo su
+apt update
+apt install clamav -y
+clamscan --version
+clamscan -r /var/www/
+systemctl status clamav-freshclam
+wget https://secure.eicar.org/eicar.com
+ls -la
+clamscan eicar.com
+clamscan --infected --remove --recursive ./
+ls -la
